@@ -31,6 +31,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///////////////////////////////////////////////////////////////////////////////
 
+
 #pragma once
 
 #include <memory>
@@ -87,6 +88,11 @@ class NesterovPlaceVars
   void reset();
 };
 
+/**
+ * @brief This program implements the essential logic of Nesterov method, an nonlinear optimizer.
+ * Compared to Conjugate Gradient methods (gradient descent), Nesterov resolves the problem in an effecient way
+ * by looking a head term (eg. iter steps, learning rate) in its equation.
+ **/
 class NesterovPlace
 {
  public:

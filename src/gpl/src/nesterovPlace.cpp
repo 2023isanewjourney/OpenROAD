@@ -86,6 +86,9 @@ void NesterovPlaceVars::reset()
   debug_inst = nullptr;
 }
 
+/**
+ * This function initializes an NesteroPlace object with NULL value.
+ **/
 NesterovPlace::NesterovPlace()
     : pb_(nullptr),
       nb_(nullptr),
@@ -111,6 +114,19 @@ NesterovPlace::NesterovPlace()
 {
 }
 
+/**
+ * @fn  NesterovPlace(const NesterovPlaceVars&, std::shared_ptr<PlacerBase>, std::shared_ptr<NesterovBase>, std::shared_ptr<RouteBase>, std::shared_ptr<TimingBase>, utl::Logger*)
+ * @brief This function construct an NesteroPlace object with variables initialized with defined Params.
+ *
+ * @pre
+ * @post
+ * @param npVars
+ * @param pb
+ * @param nb
+ * @param rb
+ * @param tb
+ * @param log
+ */
 NesterovPlace::NesterovPlace(const NesterovPlaceVars& npVars,
                              std::shared_ptr<PlacerBase> pb,
                              std::shared_ptr<NesterovBase> nb,
