@@ -90,8 +90,8 @@ class NesterovPlaceVars
 
 /**
  * @brief This program implements the essential logic of Nesterov method, an nonlinear optimizer.
- * Compared to Conjugate Gradient methods (gradient descent), Nesterov resolves the problem in an effecient way
- * by looking a head term (eg. iter steps, learning rate) in its equation.
+ * Compared to Conjugate Gradient methods (gradient descent), Nesterov resolves the problem in an efficient way
+ * by looking a head term (eg. Iter steps, learning rate) in its equation.
  **/
 class NesterovPlace
 {
