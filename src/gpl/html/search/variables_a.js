@@ -1,0 +1,26 @@
+var searchData=
+[
+  ['nb_5f_0',['nb_',['../classgpl_1_1_replace.html#aa9e5fb70a17e206a9495992191998468',1,'gpl::Replace::nb_'],['../classgpl_1_1_graphics.html#a3ecfe6f699df2760a8c39a74a5c73945',1,'gpl::Graphics::nb_'],['../classgpl_1_1_nesterov_place.html#a9fbc570dd8e1273f314f4a4590dcec5a',1,'gpl::NesterovPlace::nb_'],['../classgpl_1_1_route_base.html#a468f98febb8fdaa8a93ccc00de1dac05',1,'gpl::RouteBase::nb_'],['../classgpl_1_1_timing_base.html#a691e124df045e2ea8581206064628daf',1,'gpl::TimingBase::nb_']]],
+  ['nbvars_5f_1',['nbVars_',['../classgpl_1_1_nesterov_base.html#a0c47c4c7b77d94b22ce9917a4353aca8',1,'gpl::NesterovBase']]],
+  ['nesterovplacemaxiter_5f_2',['nesterovPlaceMaxIter_',['../classgpl_1_1_replace.html#a327f5b782f371986929e6fab536e7e42',1,'gpl::Replace']]],
+  ['net_5f_3',['net_',['../classgpl_1_1_pin.html#adc6e5543a7253f4efccb010c93c64f79',1,'gpl::Pin::net_'],['../classgpl_1_1_net.html#ad2fb315d02c33d6025ebe672f22b88d8',1,'gpl::Net::net_']]],
+  ['net_5fweight_5fmax_5f_4',['net_weight_max_',['../classgpl_1_1_timing_base.html#ae94983a0e6d061ed1d303f1eb82ec242',1,'gpl::TimingBase']]],
+  ['netmap_5f_5',['netMap_',['../classgpl_1_1_placer_base.html#ae1be4c48933b19a4d83405ec852ef467',1,'gpl::PlacerBase']]],
+  ['nets_5f_6',['nets_',['../classgpl_1_1_g_net.html#aed20a7f719808b779f2ec7bfcde341f0',1,'gpl::GNet::nets_'],['../classgpl_1_1_placer_base.html#a06010214ca66baa140f25e1e6ad0e95e',1,'gpl::PlacerBase::nets_']]],
+  ['netstor_5f_7',['netStor_',['../classgpl_1_1_placer_base.html#a98fa89a39f6b11c2a237c8e831e59e4a',1,'gpl::PlacerBase']]],
+  ['netweightscale_8',['netWeightScale',['../classgpl_1_1_initial_place_vars.html#a32267910f255bf88f2c794fd66d8faa4',1,'gpl::InitialPlaceVars']]],
+  ['nextcoordi_5f_9',['nextCoordi_',['../classgpl_1_1_nesterov_place.html#a6daa1286db0f64d14fcadacdebac4792',1,'gpl::NesterovPlace']]],
+  ['nextslpcoordi_5f_10',['nextSLPCoordi_',['../classgpl_1_1_nesterov_place.html#a8d7592f48b697d6a618dbd185ac8b0b7',1,'gpl::NesterovPlace']]],
+  ['nextslpdensitygrads_5f_11',['nextSLPDensityGrads_',['../classgpl_1_1_nesterov_place.html#ad8bff091f3f448a381a40a792515d100',1,'gpl::NesterovPlace']]],
+  ['nextslpsumgrads_5f_12',['nextSLPSumGrads_',['../classgpl_1_1_nesterov_place.html#afcd85cba59c802572c732100897b5343',1,'gpl::NesterovPlace']]],
+  ['nextslpwirelengthgrads_5f_13',['nextSLPWireLengthGrads_',['../classgpl_1_1_nesterov_place.html#a28375ef689aa3142d243d82b81b931b1',1,'gpl::NesterovPlace']]],
+  ['nnz_5f_14',['nnz_',['../classgpl_1_1_gpu_solver.html#a8a9e289e013694bab81bc9910bd9ef6f',1,'gpl::GpuSolver']]],
+  ['nonplacearea_5f_15',['nonPlaceArea_',['../classgpl_1_1_bin.html#a0814681976d4feeb253ab0fed90b2bec',1,'gpl::Bin']]],
+  ['nonplaceareaunscaled_5f_16',['nonPlaceAreaUnscaled_',['../classgpl_1_1_bin.html#a092602d50a2741f6acd27b09c9c1132a',1,'gpl::Bin']]],
+  ['nonplaceinsts_5f_17',['nonPlaceInsts_',['../classgpl_1_1_placer_base.html#a23b8c22f1585f2028100feece95bbdd6',1,'gpl::PlacerBase']]],
+  ['nonplaceinstsarea_5f_18',['nonPlaceInstsArea_',['../classgpl_1_1_placer_base.html#a16361c3f658b2e0fc6f41c889c65d073',1,'gpl::PlacerBase']]],
+  ['np_5f_19',['np_',['../classgpl_1_1_replace.html#a3a8468da150a363c660d1e945a1af8be',1,'gpl::Replace::np_'],['../classgpl_1_1_graphics.html#af16d287d6d25e743a36f2a71c3bd5319',1,'gpl::Graphics::np_']]],
+  ['npvars_5f_20',['npVars_',['../classgpl_1_1_nesterov_place.html#a058ed826618c5d3007343d716759a0fc',1,'gpl::NesterovPlace']]],
+  ['numcall_5f_21',['numCall_',['../classgpl_1_1_route_base.html#a2718bed99a747ef65fd31dda9cc5eb39',1,'gpl::RouteBase']]],
+  ['numroutinglayers_5f_22',['numRoutingLayers_',['../classgpl_1_1_tile_grid.html#ab638f9e3f9439f71b2272f68ee0a1df2',1,'gpl::TileGrid']]]
+];
