@@ -2,6 +2,8 @@
 
 RePlAce: Advancing Solution Quality and Routability Validation in Global Placement
 
+[Link to Generated Doxygen](https://htmlpreview.github.io/?https://github.com/imkiding/OpenROAD/blob/doxygen/src/gpl/html/index.html)
+
 Features:
 
 -   Analytic and nonlinear placement algorithm. Solves
