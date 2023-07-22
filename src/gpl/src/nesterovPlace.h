@@ -89,14 +89,34 @@ class NesterovPlaceVars
 };
 
 /**
- * @brief This program implements the essential logic of Nesterov method, an nonlinear optimizer.
- * Compared to Conjugate Gradient methods (gradient descent), Nesterov resolves the problem in an efficient way
+ * @brief This program implements the core, a Nesterov nonlinear optimizer.
+ *
+ * Compared to Conjugate Gradient methods (or a similar algo: gradient descent), Nesterov resolves the problem in an efficient way
  * by looking a head term (eg. Iter steps, learning rate) in its equation.
  **/
 class NesterovPlace
 {
  public:
   NesterovPlace();
+
+  /**
+   * @fn  NesterovPlace(const NesterovPlaceVars&, std::shared_ptr<PlacerBase>, std::shared_ptr<NesterovBase>,
+   * std::shared_ptr<RouteBase>, std::shared_ptr<TimingBase>, utl::Logger*)
+   * @brief  Constructs an NesteroPlace with variables such as initialized with custom NesterovPlace(NP)
+   * parameters, and databases of Openroad, Nesterov, Rout and Time.
+   * The last two were initialized with pointers to a global router and gate resizer.
+   *
+   * @pre pb cannot be empty
+   * @post
+   * @param npVars NesterovPlaceVars includes custom parameters such as initial dentity penalty factor,
+   * initial WL coef and target overflow
+   * @param pb PlacerBase initiated with odb(Openroad Database) which holds essential data such as Inst area, pins, nets
+   * @param nb NesterovBase initiated with pb
+   * @param rb RouteBaseVars initiated with odb, nb, and fr (pointer to the Global router)
+   * @param tb TimingBase initiated with nb and rs (pointer to the Resizer)
+   * @param log
+   * @see  Replace::initNesterovPlace()
+   */
   NesterovPlace(const NesterovPlaceVars& npVars,
                 std::shared_ptr<PlacerBase> pb,
                 std::shared_ptr<NesterovBase> nb,
@@ -105,9 +125,32 @@ class NesterovPlace
                 utl::Logger* log);
   ~NesterovPlace();
 
-  // return iteration count
+  /**
+   * @fn int doNesterovPlace(int=0)
+   * @brief runs Nesterov Placement.
+   * A Nesterov’s method solves the nonlinear problem iteratively till convergence is reached.
+   * A few variables are maintained and updated while iteratively solving
+   * the optimization problem with params, steplength (α) - how far to move in a direction, which is maximized in order to
+   * accelerate the convergence based on a reference solution -  Lipschitz constant.
+   * In addition, stopping criteria such as minimum overflow, divergence detection are specified at beginning.
+   *
+   * @pre no divergence detected.
+   * @post
+   * @param start_iter
+   * @return iteration count.
+   */
   int doNesterovPlace(int start_iter = 0);
 
+  /***
+   * @fn void updateGradients(std::vector<FloatPoint>&, std::vector<FloatPoint>&, std::vector<FloatPoint>&)
+   * @brief recursively computes and update gradients of (sum, wirelength, density)
+   *
+   * @pre
+   * @post
+   * @param sumGrads
+   * @param wireLengthGrads
+   * @param densityGrads
+   */
   void updateGradients(std::vector<FloatPoint>& sumGrads,
                        std::vector<FloatPoint>& wireLengthGrads,
                        std::vector<FloatPoint>& densityGrads);
@@ -116,11 +159,32 @@ class NesterovPlace
 
   void updateInitialPrevSLPCoordi();
 
+  /***
+   * @fn float getStepLength(const std::vector<FloatPoint>&, const std::vector<FloatPoint>&, const std::vector<FloatPoint>&, const std::vector<FloatPoint>&)
+   * @brief computes steplength using the ratio of distances of delta changes (coordinates, gradients) between the current Iter and the previous Iter.
+   *
+   * @pre
+   * @post
+   * @param prevCoordi_
+   * @param prevSumGrads_
+   * @param curCoordi_
+   * @param curSumGrads_
+   * @return
+   */
   float getStepLength(const std::vector<FloatPoint>& prevCoordi_,
                       const std::vector<FloatPoint>& prevSumGrads_,
                       const std::vector<FloatPoint>& curCoordi_,
                       const std::vector<FloatPoint>& curSumGrads_);
 
+  /***
+   * @fn void updateNextIter(const int)
+   * @brief update iteration the current parameters with the next ones, including SLP coordinates, WL Grads, Density Grads.
+   * Additionally, it also updates Coef of WL and penalty.
+   *
+   * @pre
+   * @post
+   * @param iter
+   */
   void updateNextIter(const int iter);
   float getPhiCoef(float scaledDiffHpwl) const;
 

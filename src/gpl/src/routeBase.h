@@ -31,6 +31,11 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///////////////////////////////////////////////////////////////////////////////
 
+/**
+ * A file declares RouteBase, along with Tile, TileGrid and RouteBase variables.
+ *
+ */
+
 #pragma once
 
 #include <memory>

@@ -114,19 +114,6 @@ NesterovPlace::NesterovPlace()
 {
 }
 
-/**
- * @fn  NesterovPlace(const NesterovPlaceVars&, std::shared_ptr<PlacerBase>, std::shared_ptr<NesterovBase>, std::shared_ptr<RouteBase>, std::shared_ptr<TimingBase>, utl::Logger*)
- * @brief This function construct an NesteroPlace object with variables initialized with defined Params.
- *
- * @pre
- * @post
- * @param npVars
- * @param pb
- * @param nb
- * @param rb
- * @param tb
- * @param log
- */
 NesterovPlace::NesterovPlace(const NesterovPlaceVars& npVars,
                              std::shared_ptr<PlacerBase> pb,
                              std::shared_ptr<NesterovBase> nb,
@@ -495,19 +482,25 @@ int NesterovPlace::doNesterovPlace(int start_iter)
 
   bool isDivergeTriedRevert = false;
 
-  // Core Nesterov Loop
+  /// Core Nesterov Loop of ePlace-MS:
+  /// It computes the gradient and preconditioner, predicts
+  /// the Lipschitz constant, and adjusts steplength via backtracking.
+  ///
   int iter = start_iter;
   for (; iter < npVars_.maxNesterovIter; iter++) {
     debugPrint(log_, GPL, "np", 1, "Iter: {}", iter + 1);
 
     float prevA = curA;
 
-    // here, prevA is a_(k), curA is a_(k+1)
-    // See, the ePlace-MS paper's Algorithm 1
-    //
+    /// - Algo I: step 4
+    /// here, prevA is a_(k), curA is a_(k+1), where
+    /// a_(k) is an optimization parameter iteratively updated.
+    /// For further information, see the ePlace-MS paper's Algorithm 1.
+    ///
     curA = (1.0 + sqrt(4.0 * prevA * prevA + 1.0)) * 0.5;
 
-    // coeff is (a_k - 1) / ( a_(k+1) ) in paper.
+    /// - Algo I: step 5 partially to compute the reference solution
+    ///coeff is (a_k - 1) / ( a_(k+1) ) in paper.
     float coeff = (prevA - 1.0) / curA;
 
     debugPrint(log_, GPL, "np", 1, "PreviousA: {:g}", prevA);
@@ -515,21 +508,31 @@ int NesterovPlace::doNesterovPlace(int start_iter)
     debugPrint(log_, GPL, "np", 1, "Coefficient: {:g}", coeff);
     debugPrint(log_, GPL, "np", 1, "StepLength: {:g}", stepLength_);
 
-    // Back-Tracking loop
+    /// (*LOOP_START: BkTrk*)
+    /// Back-Tracking loop to effectively prevent steplength overestimation
     int numBackTrak = 0;
     for (numBackTrak = 0; numBackTrak < npVars_.maxBackTrack; numBackTrak++) {
       // fill in nextCoordinates with given stepLength_
       for (size_t k = 0; k < nb_->gCells().size(); k++) {
+
+    	/// - Algo I: step 3
+    	/// Compute a new solution given the computed gradient and steplength
         FloatPoint nextCoordi(
             curSLPCoordi_[k].x + stepLength_ * curSLPSumGrads_[k].x,
             curSLPCoordi_[k].y + stepLength_ * curSLPSumGrads_[k].y);
 
+        /// - Algo I: step 5
+        /// Computes a new reference solution which will be used to compute a
+        /// reference step length at the following steps
         FloatPoint nextSLPCoordi(
             nextCoordi.x + coeff * (nextCoordi.x - curCoordi_[k].x),
             nextCoordi.y + coeff * (nextCoordi.y - curCoordi_[k].y));
 
         GCell* curGCell = nb_->gCells()[k];
 
+        /// - Update next Coordi with the new computed nextCoordi using given steplength,
+        /// without boundary exceeded.
+        /// Otherwise, update by heuristic rules, such as bg_.lx() + gCell->dDx() / 2
         nextCoordi_[k] = FloatPoint(
             nb_->getDensityCoordiLayoutInsideX(curGCell, nextCoordi.x),
             nb_->getDensityCoordiLayoutInsideY(curGCell, nextCoordi.y));
@@ -539,8 +542,11 @@ int NesterovPlace::doNesterovPlace(int start_iter)
             nb_->getDensityCoordiLayoutInsideY(curGCell, nextSLPCoordi.y));
       }
 
+      /// - A core function updates Bins' density and area, and a hotspot.
       nb_->updateGCellDensityCenterLocation(nextSLPCoordi_);
+      /// - A core function does FFT to compute electrostatic potential and forces and then update to each Bin
       nb_->updateDensityForceBin();
+      /// - A core function computes and update WL force using WeightedAverage model
       nb_->updateWireLengthForceWA(wireLengthCoefX_, wireLengthCoefY_);
 
       updateGradients(
@@ -551,6 +557,7 @@ int NesterovPlace::doNesterovPlace(int start_iter)
         break;
       }
 
+      /// - Computes the next steps using the ratios of changes of Coordi, Sum Grads
       float newStepLength = getStepLength(
           curSLPCoordi_, curSLPSumGrads_, nextSLPCoordi_, nextSLPSumGrads_);
 
@@ -573,6 +580,7 @@ int NesterovPlace::doNesterovPlace(int start_iter)
         stepLength_ = newStepLength;
       }
     }
+    /// (*LOOP_END: BkTrk*)
 
     debugPrint(log_, GPL, "np", 1, "NumBackTrak: {}", numBackTrak + 1);
 
@@ -596,6 +604,7 @@ int NesterovPlace::doNesterovPlace(int start_iter)
       break;
     }
 
+    /// - Updates parameters for iteration, along with Coefi of hpwl and penalty
     updateNextIter(iter);
 
     // For JPEG Saving
@@ -626,7 +635,7 @@ int NesterovPlace::doNesterovPlace(int start_iter)
       hpwlWithMinSumOverflow = prevHpwl_;
     }
 
-    // timing driven feature
+    /// - Calls resizer to assess the worst timing paths, when timing driven mode is enabled
     // do reweight on timing-critical nets.
     if (npVars_.timingDrivenMode
         && tb_->isTimingNetWeightOverflow(sumOverflow_)) {
@@ -647,8 +656,8 @@ int NesterovPlace::doNesterovPlace(int start_iter)
       }
     }
 
-    // diverge detection on
-    // large max_phi_cof value + large design
+    /// - Diverge detection on large max_phi_cof value + large design
+    /// Revert back to original solutions, or break if no way to revert.
     //
     // 1) happen overflow < 20%
     // 2) Hpwl is growing
@@ -694,7 +703,7 @@ int NesterovPlace::doNesterovPlace(int start_iter)
       }
     }
 
-    // save snapshots for routability-driven
+    /// - saves snapshots for routability-driven
     if (!isSnapshotSaved && npVars_.routabilityDrivenMode
         && 0.6 >= sumOverflowUnscaled_) {
       snapshotCoordi = curCoordi_;
@@ -710,7 +719,8 @@ int NesterovPlace::doNesterovPlace(int start_iter)
       log_->report("[NesterovSolve] Snapshot saved at iter = {}", iter);
     }
 
-    // check routability using GR
+    /// - checks routability using GR when routability driven mode is enabled,
+    /// revert for bad routability
     if (npVars_.routabilityDrivenMode && isRoutabilityNeed_
         && npVars_.routabilityCheckOverflow >= sumOverflowUnscaled_) {
       // recover the densityPenalty values
@@ -753,6 +763,7 @@ int NesterovPlace::doNesterovPlace(int start_iter)
   }
   // in all case including diverge,
   // db should be updated.
+  /// - updates DB by marking instances Placed, and set their locations
   updateDb();
 
   if (isDiverged_) {

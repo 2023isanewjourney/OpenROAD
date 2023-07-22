@@ -47,7 +47,14 @@ class FFT
   // input func
   void updateDensity(int x, int y, float density);
 
-  // do FFT
+  /**
+   * @fn void doFFT()
+   * @brief do FFT, The split-radix FFT is used as a fast Fourier transform (FFT) algorithm
+   * for computing the discrete Fourier transform (DFT). Under the hood, it calls ddct(Discrete Cosine Transform)
+   *
+   * @pre
+   * @post
+   */
   void doFFT();
 
   // returning func

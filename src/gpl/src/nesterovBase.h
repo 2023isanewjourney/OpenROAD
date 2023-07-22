@@ -31,6 +31,11 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///////////////////////////////////////////////////////////////////////////////
 
+/**
+ * A file declares NesterovBase, along with GNet, GPin, GCell, Bin and BinGrid and their operators
+ *
+ */
+
 #pragma once
 
 #include <memory>
@@ -63,6 +68,7 @@ class Net;
 class GPin;
 class FFT;
 
+/// Global Routing Cells composed of instance and pin vector
 class GCell
 {
  public:
@@ -225,6 +231,7 @@ inline int GCell::dDy() const
   return dUy_ - dLy_;
 }
 
+/// Global Net consists of vectors of gPins and nets; and Params sum-up computed weighted average WL
 class GNet
 {
  public:
@@ -435,6 +442,7 @@ inline float GNet::waYExpMaxSumY() const
   return waYExpMaxSumY_;
 }
 
+/// consists of pointers to its gCell and gNet; and a vector of pins; and computed weighted average WL
 class GPin
 {
  public:
@@ -666,6 +674,11 @@ inline void Bin::addFillerArea(int64_t area)
 // The bin can be non-uniform because of
 // "integer" coordinates
 //
+/**
+ * @class BinGrid
+ * @brief consists of a vector of Bins and a pointer to PlacerBase.
+ *
+ */
 class BinGrid
 {
  public:
@@ -678,6 +691,16 @@ class BinGrid
   void setCorePoints(const Die* die);
   void setBinCnt(int binCntX, int binCntY);
   void setTargetDensity(float density);
+  /***
+   * @fn void updateBinsGCellDensityArea(const std::vector<GCell*>&)
+   * @brief updates Bins' density and area, a core function
+   *
+   * @pre
+   * @post density gets updated for each bin
+   * @param cells GCells inlcudes metadata of Instances, normal cells and filler cells.
+   *
+   * @warning A runtime hotspot
+   */
   void updateBinsGCellDensityArea(const std::vector<GCell*>& cells);
 
   void initBins();
@@ -853,14 +876,15 @@ class NesterovBase
   float getDensityCoordiLayoutInsideX(const GCell* gCell, float cx) const;
   float getDensityCoordiLayoutInsideY(const GCell* gCell, float cy) const;
 
-  // WL force update based on WeightedAverage model
-  // wlCoeffX : WireLengthCoefficient for X.
-  //            equal to 1 / gamma_x
-  // wlCoeffY : WireLengthCoefficient for Y.
-  //            equal to 1 / gamma_y
-  //
-  // Gamma is described in the ePlaceMS paper.
-  //
+  /***
+   * @fn void updateWireLengthForceWA(float, float)
+   * @brief Computes and update WL force using WeightedAverage model
+   *
+   * @pre
+   * @post
+   * @param wlCoeffX WireLengthCoefficient for X, equal to 1 / gamma_x.
+   * @param wlCoeffY WireLengthCoefficient for Y, equal to 1 / gamma_y
+   */
   void updateWireLengthForceWA(float wlCoeffX, float wlCoeffY);
 
   FloatPoint getWireLengthGradientPinWA(const GPin* gPin,
@@ -880,9 +904,23 @@ class NesterovBase
 
   int64_t getHpwl();
 
-  // update electrostatic forces within Bin
+  /***
+   * @fn void updateDensityForceBin()
+   * @brief Given updated bin density, do FFT to compute electrostatic potential and forces and then update to each Bin
+   *
+   * @pre
+   * @post
+   */
+
   void updateDensityForceBin();
 
+  /***
+   * @fn void updateDbGCells()
+   * @brief marks instances Placed, set their locations.
+   *
+   * @pre
+   * @post
+   */
   void updateDbGCells();
 
   BinGrid& getBinGrid() { return bg_; }
@@ -922,6 +960,22 @@ class NesterovBase
   float targetDensity_;
   float uniformTargetDensity_;
 
+  /**
+     * @fn void init()
+   * @brief initiates a nesterovbase object with pb_ (PlacerBase)
+   * The information initiated includes:
+   * -  std/macro instance areas, location
+   * - gPins
+   * - gCells
+   * - gNets
+   * - virtual filler GCell
+   * In addition, it initializes bins and bin grid structure
+   * Lastly, it initializes fft structrue based on bins
+   * @pre
+   * @post
+   *
+   * @note BinGrid::initBins()
+   */
   void init();
   void initFillerGCells();
   void initBinGrid();

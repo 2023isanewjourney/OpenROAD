@@ -30,7 +30,10 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///////////////////////////////////////////////////////////////////////////////
-
+/**
+ * A file declares PlacerBase, along with Instance, Pin, Net, Die and PlacerBase variables.
+ *
+ */
 #pragma once
 
 #include <memory>
@@ -65,6 +68,7 @@ class Pin;
 class Net;
 class GCell;
 
+/// Instance consists of a pointer to odb::dbInst and a vecor of pins
 class Instance
 {
  public:
@@ -138,6 +142,7 @@ class Instance
   bool is_locked_;
 };
 
+/// Pin consists of pointers its instance and net
 class Pin
 {
  public:
@@ -212,6 +217,7 @@ class Pin
   void updateCoordi(odb::dbBTerm* bTerm);
 };
 
+/// Net consists of a pointer to odb::dbNet and a vector of pins
 class Net
 {
  public:
@@ -247,6 +253,7 @@ class Net
   int uy_;
 };
 
+/// Die dimentation information.
 class Die
 {
  public:
@@ -388,6 +395,13 @@ class PlacerBase
   int64_t macroInstsArea_;
   int64_t stdInstsArea_;
 
+  /**
+   * @fn void init()
+   * @brief initiates a PlacerBase object with odb::dbDatabase
+   *
+   * @pre
+   * @post
+   */
   void init();
   void initInstsForUnusableSites();
 

@@ -73,6 +73,18 @@ class Replace
   Replace();
   ~Replace();
 
+  /**
+   * @fn void init(odb::dbDatabase*, rsz::Resizer*, grt::GlobalRouter*, utl::Logger*)
+   * @brief initializes a Replace with a Openroad database, a Global router, and a Gate resizer.
+   *
+   * @pre
+   * @post
+   * @param odb
+   * @param resizer size gates in a post synthesis involveing buffer ports, repairing cap
+   * and slew violations, resizing gates to reduce slew variation (https://github.com/The-OpenROAD-Project-Attic/Resizer)
+   * @param router FastRoute is an open-source global router
+   * @param logger
+   */
   void init(odb::dbDatabase* odb,
             rsz::Resizer* resizer,
             grt::GlobalRouter* router,
@@ -80,15 +92,65 @@ class Replace
   void reset();
 
   void doIncrementalPlace();
+
+  /**
+   * @fn void doInitialPlace()
+   * @brief runs a Bi-Conjugate gradient stabilized placement on CPU or GPU which is configurable.
+   * It creates an InitialPlace object. Then, to process the object,
+   * under the hood, it runs a series of functions:
+   *  - set center location for instances;
+   *  - set Ext Id and reset Pin Min Max attributes
+   *  - finally, it creates Sparse  Metrixs from a PlacerBaseCommon object, which supposes to include everything from PlacerBase that is not region specific.
+   * Then, BiCGSTAB Eigen Solver is used to compute the Eigen Vectors for X and Y dimensions.
+   *
+   * @pre
+   * @post
+   * @note InitialPlace::createSparseMatrix, gpl::InitialPlace, InitialPlace::createSparseMatrix()
+   */
   void doInitialPlace();
 
+  /**
+   * @fn int doNesterovPlace(int=0)
+   * @brief calls Nestero Placer to run placement
+   *
+   * @pre initNesterovplace is required
+   * @post
+   * @param start_iter
+   * @return
+   */
   int doNesterovPlace(int start_iter = 0);
 
   // Initial Place param settings
   void setInitialPlaceMaxIter(int iter);
+  /**
+   * @fn void setInitialPlaceMinDiffLength(int)
+   * @brief sets minDiffLength used for B2B modeling while creating InitialPlace::createSparseMatrix
+   * The variable is used in createSparseMatrix during Initial Placement.
+   *
+   * @pre
+   * @post
+   * @param length
+   */
   void setInitialPlaceMinDiffLength(int length);
   void setInitialPlaceMaxSolverIter(int iter);
+  /**
+     * @fn void setInitialPlaceMaxFanout(int)
+   * @brief set ipVars_.maxFanout for B2B modeling to escape long time cals on huge fanout.
+   *  The variable is used in createSparseMatrix during Initial Placement.
+   * @pre
+   * @post
+   * @param fanout
+   */
   void setInitialPlaceMaxFanout(int fanout);
+
+  /**
+     * @fn void setInitialPlaceNetWeightScale(float)
+   * @brief set net weight to each net, used in createSparseMatrix during Initial Placement.
+   *
+   * @pre
+   * @post
+   * @param scale
+   */
   void setInitialPlaceNetWeightScale(float scale);
 
   void setNesterovPlaceMaxIter(int iter);
@@ -155,13 +217,17 @@ class Replace
   std::unique_ptr<InitialPlace> ip_;
   std::unique_ptr<NesterovPlace> np_;
 
+  // Members for Initial placement
+
   int initialPlaceMaxIter_;
+  /// parameter used for B2B modeling
   int initialPlaceMinDiffLength_;
   int initialPlaceMaxSolverIter_;
   int initialPlaceMaxFanout_;
   float initialPlaceNetWeightScale_;
   bool forceCPU_;
 
+  // Members to initialize np variable for Nesterov Placement
   int nesterovPlaceMaxIter_;
   int binGridCntX_;
   int binGridCntY_;
