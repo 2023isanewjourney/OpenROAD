@@ -398,7 +398,13 @@ class PlacerBase
   /**
    * @fn void init()
    * @brief initiates a PlacerBase object with odb::dbDatabase
-   *
+   * The information initiated includes:
+   * - die-core area update
+   * - siteSize update
+   * - insts fill with real instances and fake instances
+   * - nets fill
+   * - pins update: inst'pin and net's pin
+   * -
    * @pre
    * @post
    */

@@ -68,7 +68,7 @@ class Net;
 class GPin;
 class FFT;
 
-/// Global Routing Cells composed of instance and pin vector
+/// Global Routing Cells composed of vectors of instance and pin
 class GCell
 {
  public:
@@ -961,7 +961,7 @@ class NesterovBase
   float uniformTargetDensity_;
 
   /**
-     * @fn void init()
+   * @fn void init()
    * @brief initiates a nesterovbase object with pb_ (PlacerBase)
    * The information initiated includes:
    * -  std/macro instance areas, location

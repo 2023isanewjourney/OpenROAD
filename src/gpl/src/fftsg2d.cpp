@@ -749,6 +749,23 @@ void ddct2d(int n1, int n2, int isgn, float** a, float* t, int* ip, float* w)
 {
   void makewt(int nw, int* ip, float* w);
   void makect(int nc, int* ip, float* c);
+  /***
+    * @fn void ddct(int, int, float*, int*, float*)
+	A method with a following butterfly operation appended to "rdft".
+	In backward transform :
+	C[k] = sum_j=0^n-1 a[j]*cos(pi*j*(k+1/2)/n), 0<=k<n,
+	this routine makes an array r[] :
+	r[0] = a[0],
+	r[j]   = Re((a[j] - i*a[n-j]) * W(4*n)^j*(1+i)/2),
+	r[n-j] = Im((a[j] - i*a[n-j]) * W(4*n)^j*(1+i)/2),
+	0<j<=n/2
+	and calls "rdft" of length n :
+	A[k] = sum_j=0^n-1 r[j]*W(n)^(j*k), 0<=k<=n/2,
+	W(n) = exp(2*pi*i/n).
+	The result C[k] are :
+	C[2*k]   =  Re(A[k] * (1-i)),
+	C[2*k-1] = -Im(A[k] * (1-i)).
+   */
   void ddct(int n, int isgn, float* a, int* ip, float* w);
   void ddxt2d_sub(int n1,
                   int n2,

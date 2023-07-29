@@ -310,7 +310,7 @@ bool Replace::initNesterovPlace()
   if (!np_) {
     NesterovPlaceVars npVars;
 
-    npVars.minPhiCoef = minPhiCoef_;
+    npVars.minPhiCoef = minPhiCoef_doNesterovPlace;
     npVars.maxPhiCoef = maxPhiCoef_;
     npVars.referenceHpwl = referenceHpwl_;
     npVars.routabilityCheckOverflow = routabilityCheckOverflow_;
